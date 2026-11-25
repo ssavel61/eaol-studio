@@ -1,0 +1,965 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#17242a" />
+    <title>Explore AI Out Loud Studio</title>
+    <meta
+      name="description"
+      content="A local, approval-driven workspace for turning podcast recordings into complete episodes and social clips."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand-lockup">
+          <div class="brand-mark" aria-hidden="true">EA</div>
+          <div>
+            <p class="eyebrow" id="show-name-eyebrow">Podcast production</p>
+            <h1>Explore AI Out Loud Studio</h1>
+          </div>
+        </div>
+
+        <button class="primary-button full-width" id="new-episode-button" type="button">
+          <span aria-hidden="true">＋</span> New episode
+        </button>
+        <button class="secondary-button full-width" id="show-package-button" type="button">Show package defaults</button>
+        <button class="secondary-button full-width" id="recovery-import-button" type="button">Resume recovered episode</button>
+        <button class="guide-button full-width" id="studio-guide-button" type="button">
+          <span aria-hidden="true">?</span>
+          <span><strong>How to use Studio</strong><small>Setup, workflow, and approvals</small></span>
+        </button>
+
+        <div class="sidebar-label">Episodes</div>
+        <nav id="episode-list" class="episode-list" aria-label="Episodes"></nav>
+
+        <div class="privacy-card">
+          <span class="privacy-dot" aria-hidden="true"></span>
+          <div>
+            <strong>Local processing</strong>
+            <span>Work files stay on this computer.</span>
+          </div>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <section id="production-workflow" class="hidden" aria-label="Production workflow"></section>
+        <section id="recovery-workspace" class="hidden recovery-workspace" aria-label="Recovered episode"></section>
+        <section id="welcome-view" class="welcome-view">
+          <div class="welcome-copy">
+            <p class="section-kicker">Local podcast post-production</p>
+            <h2>Your post-recording workspace.</h2>
+            <p>
+              Bring the camera and isolated-audio files you actually recorded. Studio processes them on this computer
+              and builds one approved episode foundation for two workflows: the complete show and social clips.
+            </p>
+            <div class="welcome-actions">
+              <button class="primary-button" id="welcome-new-button" type="button">Start a new episode</button>
+              <button class="secondary-button" id="welcome-guide-button" type="button">See the complete workflow</button>
+            </div>
+          </div>
+
+          <div class="workflow-preview" aria-label="Explore AI Out Loud Studio shared foundation and two production workflows">
+            <div class="workflow-row current"><span>01</span><div><strong>Sources</strong><small>Add cameras and isolated audio</small></div></div>
+            <div class="workflow-row"><span>02</span><div><strong>Sync</strong><small>Measure drift; confirm the claps</small></div></div>
+            <div class="workflow-row"><span>03</span><div><strong>Transcript</strong><small>Check alignment, words, and speakers</small></div></div>
+            <div class="workflow-row"><span>A</span><div><strong>Full Episode</strong><small>Assemble, review, and render the complete show</small></div></div>
+            <div class="workflow-row"><span>B</span><div><strong>Social Clips</strong><small>Select, approve, and render vertical moments</small></div></div>
+          </div>
+        </section>
+
+        <section id="episode-view" class="episode-view hidden" aria-live="polite">
+          <header class="episode-header">
+            <div>
+              <p class="section-kicker">Episode workspace</p>
+              <h2 id="episode-title">Episode</h2>
+              <p id="episode-meta" class="muted"></p>
+            </div>
+            <div class="header-actions">
+              <button class="secondary-button" id="episode-checklist-button" type="button">Episode checklist</button>
+              <button class="secondary-button" id="open-output-button" type="button">Open output folder</button>
+              <button class="primary-button" id="add-candidate-button" type="button">＋ Add candidate</button>
+            </div>
+          </header>
+
+          <section class="workflow-branch-selector" aria-label="Choose a production workflow">
+            <div class="workflow-shared-foundation">
+              <span class="section-kicker">Shared episode foundation</span>
+              <strong>Sources → Sync → Transcript</strong>
+              <small>Both workflows use the same approved recordings, timing, speaker evidence, and transcript.</small>
+            </div>
+            <div class="workflow-branch-buttons" role="group" aria-label="Production workflow">
+              <button class="workflow-branch-button selected" id="full-episode-workflow-button" data-workflow-branch-choice="episode" type="button" aria-pressed="true">
+                <span>Workflow 1</span><strong>Full Episode</strong><small>Assemble, review, and deliver the complete show</small>
+              </button>
+              <button class="workflow-branch-button" id="social-clips-workflow-button" data-workflow-branch-choice="social" type="button" aria-pressed="false">
+                <span>Workflow 2</span><strong>Social Clips</strong><small>Select, approve, and render vertical moments</small>
+              </button>
+            </div>
+          </section>
+
+          <div class="stage-navigation">
+            <div class="stage-strip" aria-label="Episode progress and navigation">
+              <button class="stage" id="stage-source" data-stage="source" data-scroll-target="source-readiness" type="button"><span>1</span><strong>Sources</strong></button>
+              <button class="stage" id="stage-alignment" data-stage="alignment" data-scroll-target="aligned-preview" type="button"><span>2</span><strong>Sync</strong></button>
+              <button class="stage" id="stage-transcript" data-stage="transcript" data-scroll-target="transcript-panel" type="button"><span>3</span><strong>Transcript</strong></button>
+              <button class="stage" id="stage-assembly" data-stage="assembly" data-scroll-target="assembly-workspace" type="button"><span>4</span><strong>Episode</strong></button>
+              <button class="stage" id="stage-review" data-stage="review" data-scroll-target="candidate-review-panel" type="button"><span>5</span><strong>Clips</strong></button>
+              <button class="stage" id="stage-render" data-stage="render" data-scroll-target="assembly-workspace" type="button"><span>6</span><strong>Review &amp; render</strong></button>
+            </div>
+            <button class="ghost-button workflow-view-toggle" id="workflow-view-toggle" type="button" aria-pressed="false">Show all steps</button>
+          </div>
+
+          <section class="workflow-coach" id="workflow-coach" aria-live="polite">
+            <div class="workflow-coach-index" id="workflow-coach-index">Next</div>
+            <div class="workflow-coach-copy">
+              <p class="section-kicker">Next recommended action</p>
+              <h3 id="workflow-coach-title">Review this episode</h3>
+              <p id="workflow-coach-description">Studio will identify the next incomplete receipt.</p>
+              <div class="workflow-coach-badges" id="workflow-coach-badges"></div>
+            </div>
+            <div class="workflow-coach-actions">
+              <button class="primary-button" id="workflow-next-button" type="button">Go to next step</button>
+              <button class="ghost-button" id="workflow-guide-inline-button" type="button">Open workflow guide</button>
+            </div>
+          </section>
+
+
+          <section class="source-readiness" id="source-readiness" aria-label="Source readiness" data-workflow-panel="source alignment">
+            <div class="source-readiness-heading">
+              <div>
+                <p class="section-kicker">Podcast intake</p>
+                <h3>Source readiness</h3>
+              </div>
+              <span id="intake-status" class="status-badge pending">Not measured</span>
+            </div>
+            <div id="source-cards" class="source-cards"></div>
+            <div id="intake-findings" class="intake-findings"></div>
+            <div class="sync-workspace">
+              <div id="sync-results" class="sync-results"></div>
+              <div class="sync-actions">
+                <button class="secondary-button" id="analyze-sync-button" type="button">Analyze waveform sync</button>
+                <button class="ghost-button hidden" id="reject-sync-button" type="button">Reject measurement</button>
+                <button class="primary-button hidden" id="approve-sync-button" type="button">Confirm measurement</button>
+              </div>
+            </div>
+            <div class="timeline-workspace">
+              <div id="timeline-results" class="timeline-results"></div>
+              <button class="secondary-button hidden" id="build-timeline-button" type="button">Build aligned timeline</button>
+            </div>
+            <div class="camera-direction-workspace">
+              <div id="camera-direction-results" class="camera-direction-results"></div>
+              <div class="camera-direction-actions">
+                <label class="compact-field" for="channel-source-select">Speaker evidence source
+                  <select id="channel-source-select"></select>
+                </label>
+                <button class="secondary-button" id="validate-channels-button" type="button">Validate source roles / slate</button>
+                <button class="secondary-button hidden" id="build-speaker-activity-button" type="button">Build speaker activity</button>
+                <button class="primary-button hidden" id="build-camera-plan-button" type="button">Build camera plan</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="aligned-preview hidden" id="aligned-preview" aria-label="Aligned camera preview" data-workflow-panel="alignment">
+            <div class="aligned-preview-heading">
+              <div>
+                <p class="section-kicker">Playback check</p>
+                <h3>Aligned camera preview</h3>
+              </div>
+              <span id="preview-status" class="status-badge pending">Not reviewed</span>
+            </div>
+            <p class="panel-hint">The reference camera supplies audio. Companion cameras stay muted. Check the clap or shared motion near both ends before confirming.</p>
+            <div id="aligned-preview-grid" class="aligned-preview-grid"></div>
+            <div class="preview-transport">
+              <button class="secondary-button" id="preview-play-button" type="button">Play aligned</button>
+              <button class="ghost-button" id="preview-pause-button" type="button">Pause</button>
+              <input id="preview-scrubber" type="range" min="0" max="1" value="0" step="10" aria-label="Aligned timeline position">
+              <span id="preview-time" class="preview-time">0:00.000</span>
+              <button class="ghost-button" id="preview-end-button" type="button">Jump near end</button>
+            </div>
+            <div class="preview-review-actions">
+              <button class="ghost-button" id="preview-start-check-button" type="button">Start matches</button>
+              <button class="ghost-button" id="preview-end-check-button" type="button">End matches</button>
+              <button class="ghost-button" id="reject-preview-button" type="button">Reject alignment</button>
+              <button class="primary-button" id="approve-preview-button" type="button">Confirm aligned preview</button>
+            </div>
+            <div id="preview-review-note" class="intake-next-step"></div>
+          </section>
+
+          <section class="cta-workspace" id="cta-workspace" aria-label="CTA graphic cues" data-workflow-panel="assembly" data-workflow-branch="episode">
+            <div class="cta-workspace-heading">
+              <div>
+                <p class="section-kicker">Post-production handoff</p>
+                <h3>CTA graphic cues</h3>
+              </div>
+              <span id="cta-cue-status" class="status-badge pending">Not reviewed</span>
+            </div>
+            <p class="panel-hint">Studio suggests spoken CTA moments. Preview each one, then classify it as the podcast-growth graphic or the separate newsletter-subscription graphic, or dismiss it. Use CTA beside any transcript line the detector missed.</p>
+            <div id="cta-cue-list" class="cta-cue-list"></div>
+            <div id="cta-cue-output" class="cta-cue-output"></div>
+          </section>
+
+          <section class="episode-naming-workspace" id="episode-naming-workspace" aria-label="Numbered episode title" data-workflow-panel="assembly" data-workflow-branch="episode">
+            <div class="episode-naming-heading">
+              <div>
+                <p class="section-kicker">Editorial identity</p>
+                <h3>Name this numbered episode</h3>
+              </div>
+              <span id="episode-naming-status" class="status-badge pending">Not started</span>
+            </div>
+            <p class="panel-hint">Studio keeps the episode number separate from the canonical title, prepares a transcript-bound naming request, and requires your approval before assembly. Preparing or importing options does not connect a provider, save an assembly, render, upload, or publish.</p>
+            <div class="episode-naming-controls">
+              <label>Episode number <input id="episode-number" type="number" min="1" max="9999" step="1" inputmode="numeric" /></label>
+              <div class="episode-naming-actions">
+                <button class="primary-button" id="prepare-naming-request-button" type="button">Prepare naming request</button>
+                <button class="secondary-button" id="copy-naming-request-button" type="button" disabled>Copy request JSON</button>
+                <button class="ghost-button" id="generate-naming-options-button" type="button" disabled title="Model selection and provider connection are a later approval gate">Generate with model — setup later</button>
+              </div>
+            </div>
+            <div id="episode-naming-request-receipt" class="assembly-receipt"></div>
+            <div id="episode-naming-candidates" class="episode-naming-candidates"></div>
+            <details class="episode-naming-manual-tools">
+              <summary>Add or import title options without connecting a provider</summary>
+              <div class="episode-naming-manual-grid">
+                <section>
+                  <strong>Add a human title option</strong>
+                  <label>Canonical title <input id="human-naming-title" maxlength="90" placeholder="Topic-led title without the episode number" /></label>
+                  <label>Why it fits <textarea id="human-naming-rationale" rows="3" maxlength="1000" placeholder="Brief transcript-grounded rationale"></textarea></label>
+                  <button class="secondary-button" id="add-human-naming-option-button" type="button">Add human option</button>
+                </section>
+                <section>
+                  <strong>Import structured options</strong>
+                  <label>Proposal JSON <textarea id="episode-naming-proposal-json" rows="8" spellcheck="false" placeholder='Paste eaol-episode-naming-proposal-v1 JSON'></textarea></label>
+                  <button class="secondary-button" id="import-naming-options-button" type="button">Validate and import options</button>
+                </section>
+              </div>
+            </details>
+            <div id="episode-naming-approval-receipt" class="assembly-receipt"></div>
+          </section>
+
+          <section class="assembly-workspace" id="assembly-workspace" aria-label="Full episode assembly" data-workflow-panel="assembly render" data-workflow-branch="episode">
+            <div class="assembly-workspace-heading">
+              <div>
+                <p class="section-kicker">Full episode</p>
+                <h3>Episode assembly</h3>
+              </div>
+              <span id="assembly-status" class="status-badge pending">Not started</span>
+            </div>
+            <p class="panel-hint">Build one reversible recipe for the complete 16:9 episode. The show defaults to side by side; a solo cut requires an explicit human editorial reason and is never triggered by speaker change alone. Social clips keep separate isolated framing. Show assets remain local and are bound to their exact file version.</p>
+            <section id="e2e-readiness" class="e2e-readiness" aria-label="End-to-end episode proof readiness">
+              <div class="e2e-readiness-heading">
+                <div><p class="section-kicker">Episode completion</p><h4>Production readiness</h4></div>
+                <span id="e2e-readiness-status" class="status-badge pending">Not ready</span>
+              </div>
+              <p>Opening → two-host program → spoken CTA → closing → complete proxy review → full local render → RSS audio QC → final text.</p>
+              <ol id="e2e-readiness-list" class="e2e-readiness-list"></ol>
+              <div class="e2e-readiness-actions">
+                <button class="secondary-button" id="e2e-show-package-button" type="button">Configure opening + closing</button>
+                <details class="production-test-tools">
+                  <summary>Test and recovery tools</summary>
+                  <button class="ghost-button" id="prepare-e2e-proof-button" type="button">Prepare 5-minute test window</button>
+                </details>
+              </div>
+            </section>
+            <div id="assembly-lock-note" class="intake-finding blocking hidden"></div>
+            <div class="assembly-form-grid">
+              <label>Episode title <input id="assembly-title" maxlength="160" /></label>
+              <div class="assembly-time-grid">
+                <label>Program start <input id="assembly-program-start" placeholder="00:00:00.000" /></label>
+                <label>Program end <input id="assembly-program-end" placeholder="00:30:00.000" /></label>
+              </div>
+            </div>
+            <div class="assembly-subheading">
+              <div><strong>Camera cut plan</strong><span>Every row begins where the prior row ends.</span></div>
+              <div class="assembly-plan-actions">
+                <button class="primary-button" id="apply-camera-plan-button" type="button">Apply source-bound camera plan</button>
+                <button class="secondary-button" id="split-assembly-shot-button" type="button">Split longest shot</button>
+              </div>
+            </div>
+            <div id="assembly-shot-list" class="assembly-shot-list"></div>
+            <section id="camera-plan-review-workspace" class="camera-plan-review-workspace hidden" aria-label="Switched camera plan review">
+              <div class="assembly-subheading">
+                <div><strong>Recorded-program camera preview</strong><span>This checks camera composition inside the conversation only. Opening, CTA graphics, divider, and closing are verified in the integrated proxy.</span></div>
+                <span id="camera-plan-review-status" class="status-badge pending">Review required</span>
+              </div>
+              <div id="camera-plan-preview-scope" class="camera-plan-preview-scope"></div>
+              <div id="camera-plan-preview-stage" class="camera-plan-preview-stage">
+                <video id="camera-plan-preview-primary" preload="metadata" playsinline></video>
+                <video id="camera-plan-preview-secondary" preload="metadata" playsinline muted></video>
+                <div id="camera-plan-preview-reason" class="camera-plan-preview-reason">Choose an available sample.</div>
+              </div>
+              <div class="camera-plan-preview-controls">
+                <span>Review display only; source files and renders stay unchanged.</span>
+                <button class="ghost-button" id="rotate-camera-plan-primary-button" type="button">Rotate camera 1 clockwise</button>
+                <button class="ghost-button" id="rotate-camera-plan-secondary-button" type="button">Rotate camera 2 clockwise</button>
+              </div>
+              <div class="camera-plan-preview-transport">
+                <button class="secondary-button" id="resume-camera-plan-preview-button" type="button" disabled>Resume preview</button>
+                <button class="ghost-button" id="pause-camera-plan-preview-button" type="button" disabled>Pause preview</button>
+                <input id="camera-plan-preview-scrubber" type="range" min="0" max="1" value="0" step="100" disabled aria-label="Representative preview position" />
+                <span id="camera-plan-preview-time" class="preview-time">Choose a sample</span>
+              </div>
+              <div id="camera-plan-sample-list" class="camera-plan-sample-list"></div>
+              <label class="camera-plan-review-notes">Review notes <textarea id="camera-plan-review-notes" rows="2" maxlength="2000" placeholder="Optional reason for rejection or approval note"></textarea></label>
+              <div class="assembly-actions">
+                <button class="ghost-button" id="reject-camera-plan-button" type="button">Reject camera plan</button>
+                <button class="primary-button" id="approve-camera-plan-button" type="button">Approve camera samples</button>
+              </div>
+            </section>
+            <div class="assembly-assets-grid">
+              <div class="assembly-package-toolbar">
+                <div><strong>Reusable show defaults</strong><span>Approved defaults are copied into the recipe only when you choose them. Existing approved episodes never update silently.</span></div>
+                <button class="secondary-button" id="refresh-show-package-button" type="button">Refresh from approved defaults</button>
+              </div>
+              <div class="assembly-asset-card">
+                <strong>Opening package</strong>
+                <label class="cta-closing-option"><input id="assembly-opening-inherit" type="checkbox" /> Use approved show opening</label>
+                <label>Visual <div class="path-picker"><input id="assembly-opening-visual" placeholder="Optional MP4, MOV, or image" /><button class="secondary-button source-browse" data-target="assembly-opening-visual" data-kind="visual" type="button">Browse</button></div></label>
+                <label>Recorded intro audio <div class="path-picker"><input id="assembly-opening-voiceover" placeholder="WAV, M4A, MP3, FLAC, or AAC" /><button class="secondary-button source-browse" data-target="assembly-opening-voiceover" data-kind="audio" type="button">Browse</button></div></label>
+                <label>Background music <div class="path-picker"><input id="assembly-opening-music" placeholder="Optional WAV or audio file" /><button class="secondary-button source-browse" data-target="assembly-opening-music" data-kind="audio" type="button">Browse</button></div></label>
+                <label>Trim opening tail (seconds) <input id="assembly-opening-trim-end" type="number" min="0" max="10" step="0.01" value="0" /></label>
+                <label>Conversation picture fade-in (seconds) <input id="assembly-program-fade-in" type="number" min="0" max="1" step="0.05" value="0" /></label>
+                <span class="intake-next-step">Review the last spoken word before shortening the opening. Picture fade leaves conversation audio intact.</span>
+                <span class="intake-next-step">Recorded intro audio determines the opening length before any explicit tail trim. Background music is lowered beneath the voice.</span>
+              </div>
+              <div class="assembly-asset-card">
+                <strong>Closing package</strong>
+                <label class="cta-closing-option"><input id="assembly-closing-inherit" type="checkbox" /> Use approved show closing</label>
+                <label>Visual <div class="path-picker"><input id="assembly-closing-visual" placeholder="Optional MP4, MOV, or image" /><button class="secondary-button source-browse" data-target="assembly-closing-visual" data-kind="visual" type="button">Browse</button></div></label>
+                <label>Recorded outro audio <div class="path-picker"><input id="assembly-closing-voiceover" placeholder="WAV, M4A, MP3, FLAC, or AAC" /><button class="secondary-button source-browse" data-target="assembly-closing-voiceover" data-kind="audio" type="button">Browse</button></div></label>
+                <label>Background music <div class="path-picker"><input id="assembly-closing-music" placeholder="Optional WAV or audio file" /><button class="secondary-button source-browse" data-target="assembly-closing-music" data-kind="audio" type="button">Browse</button></div></label>
+                <label>Music lead under final speech (seconds) <input id="assembly-closing-audio-lead" type="number" min="0" max="30" step="0.5" value="0" /></label>
+                <label>Closing audio level (dB) <input id="assembly-closing-audio-gain" type="number" min="-24" max="0" step="0.5" value="0" /></label>
+                <span class="intake-next-step">Applies to the music lead and the entire closing package. Negative values lower its level.</span>
+                <span class="intake-next-step">When used, Studio starts the closing audio under the final program picture, then enters the closing visual at the matching internal point.</span>
+              </div>
+              <div class="assembly-asset-card">
+                <strong>Podcast growth CTA</strong>
+                <label class="cta-closing-option"><input id="assembly-cta-inherit" type="checkbox" /> Use approved show CTA</label>
+                <label>Visible show label <input id="assembly-cta-label" value="" maxlength="80" /></label>
+                <label>Podcast-page link <input id="assembly-cta-url" value="" placeholder="https://example.com/podcast" maxlength="500" /></label>
+                <div class="cta-action-options" aria-label="CTA actions">
+                  <label><input id="assembly-cta-like" type="checkbox" checked /> Like</label>
+                  <label><input id="assembly-cta-comment" type="checkbox" checked /> Comment</label>
+                  <label><input id="assembly-cta-subscribe" type="checkbox" checked /> Subscribe</label>
+                </div>
+                <label>Custom pop-in graphic <div class="path-picker"><input id="assembly-cta-asset" placeholder="Optional animation or image" /><button class="secondary-button source-browse" data-target="assembly-cta-asset" data-kind="visual" type="button">Browse</button></div></label>
+                <label class="cta-closing-option"><input id="assembly-cta-closing" type="checkbox" checked /> Show CTA over the recorded outro graphic</label>
+                <span id="assembly-cta-summary" class="intake-next-step"></span>
+                <span class="intake-next-step">Studio also prepares the real HTTPS link for video descriptions and podcast show notes. Text inside video is visible but not clickable.</span>
+              </div>
+              <div class="assembly-asset-card">
+                <strong>Newsletter CTA · separate</strong>
+                <label class="cta-closing-option"><input id="assembly-newsletter-inherit" type="checkbox" /> Use approved show newsletter default</label>
+                <label>Visible newsletter label <input id="assembly-newsletter-label" value="" maxlength="80" /></label>
+                <label>Approved newsletter short URL <input id="assembly-newsletter-url" placeholder="Add when the short URL is approved" maxlength="500" /></label>
+                <label>Custom newsletter graphic <div class="path-picker"><input id="assembly-newsletter-asset" placeholder="Optional animation or image" /><button class="secondary-button source-browse" data-target="assembly-newsletter-asset" data-kind="visual" type="button">Browse</button></div></label>
+                <span class="intake-next-step">This graphic is used only for transcript cues classified as Newsletter CTA. It never replaces the podcast like/comment/subscribe close.</span>
+              </div>
+              <div class="assembly-asset-card">
+                <strong>Two-shot separator</strong>
+                <label class="cta-closing-option"><input id="assembly-divider-enabled" type="checkbox" /> Add restrained center divider</label>
+                <label>Divider color
+                  <select id="assembly-divider-color">
+                    <option value="#23333a">Studio slate</option>
+                    <option value="#0e171b">Near black</option>
+                    <option value="#f3e2ae">Show gold</option>
+                  </select>
+                </label>
+                <label>Divider width
+                  <select id="assembly-divider-width">
+                    <option value="4">2px proxy / 8px 4K</option>
+                    <option value="8">4px proxy / 16px 4K</option>
+                  </select>
+                </label>
+                <span class="intake-next-step">The wider option is still subordinate to the hosts while remaining visible in a low-resolution review.</span>
+              </div>
+              <div class="assembly-asset-card">
+                <strong>Camera image balance</strong>
+                <label class="cta-closing-option"><input id="assembly-camera-balance-enabled" type="checkbox" /> Gently balance mismatched camera exposure</label>
+                <div class="assembly-time-grid">
+                  <label>Host 1 warmth <input id="assembly-primary-temperature" type="number" min="-1" max="1" step="0.05" value="0" /></label>
+                  <label>Host 2 warmth <input id="assembly-secondary-temperature" type="number" min="-1" max="1" step="0.05" value="0" /></label>
+                </div>
+                <span class="intake-next-step">Studio samples both cameras, applies bounded hue-preserving exposure adjustments, and records the measurements in the render receipt. Review the proxy: severely dark, noisy, or clipped footage cannot be fully restored.</span>
+              </div>
+              <div class="assembly-asset-card">
+                <strong>Independent host framing</strong>
+                <label class="cta-closing-option"><input id="assembly-camera-framing-enabled" type="checkbox" /> Use per-camera framing</label>
+                <div class="assembly-time-grid">
+                  <label>Host 1 zoom <input id="assembly-primary-zoom" type="number" min="1" max="1.35" step="0.01" value="1" /></label>
+                  <label>Host 1 horizontal <input id="assembly-primary-horizontal" type="number" min="-100" max="100" step="1" value="0" /></label>
+                  <label>Host 1 vertical <input id="assembly-primary-vertical" type="number" min="-100" max="100" step="1" value="0" /></label>
+                  <label>Host 2 zoom <input id="assembly-secondary-zoom" type="number" min="1" max="1.35" step="0.01" value="1" /></label>
+                  <label>Host 2 horizontal <input id="assembly-secondary-horizontal" type="number" min="-100" max="100" step="1" value="0" /></label>
+                  <label>Host 2 vertical <input id="assembly-secondary-vertical" type="number" min="-100" max="100" step="1" value="0" /></label>
+                </div>
+                <span class="intake-next-step">Adjusts only the recipe crop. Raw camera files remain unchanged. Review equal face scale, eye line, and headroom in the proxy.</span>
+              </div>
+              <div class="assembly-asset-card">
+                <strong>Lower-thirds and topic bars</strong>
+                <label class="cta-closing-option"><input id="assembly-program-graphics-enabled" type="checkbox" /> Add reviewable episode graphics</label>
+                <label>Host 1 name <input id="assembly-host-one-name" maxlength="80" value="Host 1" /></label>
+                <label>Host 2 name <input id="assembly-host-two-name" maxlength="80" value="Host 2" /></label>
+                <label>Names — source time | seconds (2–12), separated by commas <input id="assembly-lower-third-times" placeholder="00:00:49.512 | 8, 00:10:09.000 | 8" /></label>
+                <label>Topic bars — source time | title | seconds (2–60) | top or bottom
+                  <textarea id="assembly-topic-bars" rows="7" maxlength="6000" placeholder="00:01:30.000 | A sample topic title | 30 | bottom"></textarea>
+                </label>
+                <span class="intake-next-step">Bottom topic bars and names must have separate time windows. These source-bound cues are converted to exact final-package timestamps and added to the review queue. Future episodes should use approved rundown segments.</span>
+              </div>
+            </div>
+            <div id="assembly-receipt" class="assembly-receipt"></div>
+            <div id="episode-render-result" class="episode-render-result hidden">
+              <video id="episode-render-preview" controls preload="metadata"></video>
+              <div id="episode-render-receipt" class="assembly-receipt"></div>
+            </div>
+            <section id="delivery-audio-workspace" class="delivery-audio-workspace" aria-label="RSS audio delivery">
+              <div class="e2e-readiness-heading">
+                <div><p class="section-kicker">P0 delivery</p><h4>RSS-ready audio</h4></div>
+                <span id="delivery-audio-status" class="status-badge pending">Waiting for full render</span>
+              </div>
+              <p>Create a 48 kHz stereo MP3 from the approved full episode. Studio measures integrated loudness and true peak, then refuses the result if either check misses the delivery target.</p>
+              <audio id="delivery-audio-preview" class="hidden" controls preload="metadata"></audio>
+              <div id="delivery-audio-receipt" class="assembly-receipt"></div>
+              <div class="assembly-actions">
+                <button class="primary-button" id="render-delivery-audio-button" type="button">Create RSS-ready audio</button>
+              </div>
+              <span class="intake-next-step">Local output only. This does not upload or publish.</span>
+            </section>
+            <section id="delivery-text-workspace" class="delivery-text-workspace" aria-label="Final captions transcript and chapters">
+              <div class="e2e-readiness-heading">
+                <div><p class="section-kicker">P0 delivery</p><h4>Final captions, transcript & chapters</h4></div>
+                <span id="delivery-text-status" class="status-badge pending">Waiting for full render</span>
+              </div>
+              <p>Map the approved speaker transcript onto the actual opening, program, and closing timeline. Review chapter titles and timestamps before creating the checksum-bound SRT, VTT, readable transcript, and chapter files.</p>
+              <label>Chapters — one per line
+                <textarea id="delivery-chapter-lines" rows="5" maxlength="12000" placeholder="00:00 Opening and welcome&#10;12:30 Main topic&#10;28:45 Closing thoughts"></textarea>
+              </label>
+              <span class="intake-next-step">Start at 00:00 and add at least three chapters. Titles over 45 characters get a display warning. Recurring-segment rules come from show.config.json.</span>
+              <div id="delivery-text-receipt" class="assembly-receipt"></div>
+              <div class="assembly-actions">
+                <button class="primary-button" id="build-delivery-text-button" type="button">Build final text package</button>
+              </div>
+              <span class="intake-next-step">Local files only. The opening and closing are represented honestly when no reviewed narration transcript exists.</span>
+            </section>
+            <div id="episode-proxy-result" class="episode-render-result hidden">
+              <video id="episode-proxy-preview" controls preload="metadata"></video>
+              <a class="ghost-button" id="episode-proxy-focused-link" target="_blank" rel="noopener">Open simple package review</a>
+              <div id="episode-proxy-receipt" class="assembly-receipt"></div>
+              <section id="episode-proxy-review" class="episode-proxy-review" aria-label="Complete proxy human review">
+                <div class="e2e-readiness-heading">
+                  <div><p class="section-kicker">Human acceptance</p><h4>Complete proxy review</h4></div>
+                  <span id="episode-proxy-review-status" class="status-badge pending">Review required</span>
+                </div>
+                <p>Choose one honest evidence path. A complete watch requires beginning-to-end playback. Metadata-assisted spot review requires a passing exact-file audit plus the six focused human checks below.</p>
+                <fieldset class="proxy-review-mode">
+                  <legend>Approval evidence</legend>
+                  <label><input name="proxy-review-mode" value="complete_watch" type="radio" checked /> Complete beginning-to-end watch</label>
+                  <label><input name="proxy-review-mode" value="metadata_assisted" type="radio" /> Metadata-assisted spot review</label>
+                </fieldset>
+                <div id="episode-proxy-audit" class="assembly-receipt"></div>
+                <div class="assembly-actions">
+                  <button class="secondary-button" id="run-episode-proxy-audit-button" type="button">Run metadata audit</button>
+                </div>
+                <div class="proxy-review-checks">
+                  <label id="complete-watch-check"><input data-proxy-review-check="complete_watch" type="checkbox" /> Watched from beginning through end</label>
+                  <label><input data-proxy-review-check="opening" type="checkbox" /> Opening is correct</label>
+                  <label><input data-proxy-review-check="program_sync" type="checkbox" /> Program audio and video remain synced</label>
+                  <label><input data-proxy-review-check="cta" type="checkbox" /> Spoken CTA appears and is readable</label>
+                  <label><input data-proxy-review-check="closing" type="checkbox" /> Closing and closing CTA are correct</label>
+                  <label><input data-proxy-review-check="divider" type="checkbox" /> Center divider treatment is acceptable</label>
+                  <label><input data-proxy-review-check="camera_balance" type="checkbox" /> Camera exposure balance is acceptable</label>
+                </div>
+                <label>Review notes <textarea id="episode-proxy-review-notes" rows="2" maxlength="2000" placeholder="Timestamped defect or acceptance note"></textarea></label>
+                <div class="assembly-actions">
+                  <button class="ghost-button" id="reject-episode-proxy-button" type="button">Reject proxy</button>
+                  <button class="primary-button" id="approve-episode-proxy-button" type="button">Approve complete proxy</button>
+                </div>
+              </section>
+            </div>
+            <div class="assembly-actions">
+              <button class="ghost-button" id="open-episode-output-button" type="button">Open episode folder</button>
+              <button class="ghost-button" id="reject-assembly-button" type="button">Reject recipe</button>
+              <button class="secondary-button" id="save-assembly-button" type="button">Save assembly recipe</button>
+              <button class="primary-button" id="approve-assembly-button" type="button">Approve recipe</button>
+              <button class="primary-button" id="render-proxy-button" type="button">Render low-res proxy</button>
+              <button class="primary-button" id="render-episode-button" type="button">Render full episode</button>
+            </div>
+          </section>
+
+          <section class="social-clips-workspace" id="social-clips-workspace" data-workflow-panel="assembly review render" data-workflow-branch="social" aria-label="Social clips workflow">
+            <div class="source-readiness-heading">
+              <div>
+                <p class="section-kicker">Workflow 2 · Social Clips</p>
+                <h3>Turn complete thoughts into reviewed vertical clips</h3>
+              </div>
+              <span id="social-workflow-status" class="status-badge pending">Not started</span>
+            </div>
+            <p class="panel-hint">Social clips share this episode's source, sync, and transcript receipts, but keep their candidate decisions, approvals, renders, and later platform packages separate from the full episode.</p>
+            <div class="social-operator-card">
+              <div><strong>Who is using this Studio?</strong><span>Saved only on this computer. It attributes proposals, reviews, and discussion notes; it is not an account or login.</span></div>
+              <select id="social-operator-select" aria-label="Current Studio operator">
+                <option value="">Choose operator</option>
+                <option value="host_1">Host 1</option>
+                <option value="host_2">Host 2</option>
+              </select>
+              <button class="secondary-button" id="save-social-operator-button" type="button">Use this identity</button>
+              <span id="social-operator-status" class="status-badge pending">Required to contribute</span>
+            </div>
+            <div class="social-workflow-steps">
+              <article id="social-step-select"><span>1</span><div><strong>Generate or select</strong><small>Studio proposes up to six transcript-bound ideas. Choose complete thoughts; fewer strong moments are fine.</small></div><em id="social-select-count">0 candidates</em></article>
+              <article id="social-step-review"><span>2</span><div><strong>Review one at a time</strong><small>The video queues at each start. Adjust, approve, replace, discuss, or reject.</small></div><em id="social-review-count">0 approved</em></article>
+              <article id="social-step-render"><span>3</span><div><strong>Render and watch</strong><small>Use aligned cameras, isolated audio, restrained cuts, and corrected captions.</small></div><em id="social-render-count">0 watched</em></article>
+              <article id="social-step-package"><span>4</span><div><strong>Approve one package</strong><small>One master and core caption feed Shorts, Reels, and TikTok with only required transforms.</small></div><em id="social-package-count">0 packaged</em></article>
+              <article id="social-step-delivery"><span>5</span><div><strong>Build local delivery</strong><small>Create covers, post cards, release slots, and checksums in a new local version.</small></div><em id="social-delivery-count">Not ready</em></article>
+            </div>
+            <div class="social-workflow-actions">
+              <button class="primary-button" id="social-generate-suggestions-button" type="button">Generate up to 6 suggestions</button>
+              <button class="secondary-button" id="social-choose-transcript-button" type="button">Choose from transcript</button>
+              <button class="secondary-button" id="social-add-candidate-button" type="button">＋ Add candidate manually</button>
+              <button class="ghost-button" id="social-open-output-button" type="button">Open social output folder</button>
+            </div>
+            <div id="social-delivery-summary" class="assembly-receipt"></div>
+            <details class="social-quality-exception">
+              <summary>Use fewer than three only when quality requires it</summary>
+              <label class="cta-closing-option"><input id="social-quality-over-quota" type="checkbox" /> Approve a quality-over-quota exception</label>
+              <label>Reason <textarea id="social-quality-exception-reason" rows="2" maxlength="1000" placeholder="Why this episode honestly supports fewer than three distinct publishable clips"></textarea></label>
+            </details>
+            <div class="social-workflow-actions">
+              <button class="primary-button" id="social-build-delivery-button" type="button">Build new local social delivery version</button>
+            </div>
+            <div class="intake-next-step"><strong>Local handoff only:</strong> this workflow makes the reusable masters, covers, copy cards, release slots, and receipts. Account connection, upload, scheduling, and publication remain separate gates.</div>
+          </section>
+
+          <div class="episode-grid" data-workflow-panel="transcript review">
+            <section class="media-column">
+              <div class="video-card">
+                <video id="source-video" controls preload="metadata"></video>
+                <div id="video-fallback" class="video-fallback hidden">
+                  <strong>Source preview unavailable</strong>
+                  <span>The recording may still be copying or use a browser-incompatible format.</span>
+                </div>
+              </div>
+
+              <div class="panel transcript-panel" id="transcript-panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="section-kicker">Transcript</p>
+                    <h3 id="transcript-heading">Choose a complete thought</h3>
+                  </div>
+                  <span id="transcript-count" class="count-pill"></span>
+                </div>
+                <div class="speaker-transcript-workspace">
+                  <div id="speaker-transcript-results" class="speaker-transcript-results"></div>
+                  <div class="speaker-transcript-actions">
+                    <button class="secondary-button hidden" id="build-speaker-transcript-button" type="button">Transcribe host tracks</button>
+                    <button class="ghost-button hidden" id="swap-speaker-roles-button" type="button">Swap Host labels</button>
+                    <button class="primary-button hidden" id="approve-speaker-transcript-button" type="button">Confirm transcript review</button>
+                  </div>
+                </div>
+                <section id="bleed-review-assistant" class="bleed-review-assistant hidden" aria-live="polite"></section>
+                <p class="panel-hint" id="transcript-hint">Choose Start on the first line, then End on the last line. The clip editor opens with both times.</p>
+                <div id="transcript-list" class="transcript-list"></div>
+              </div>
+            </section>
+
+            <aside class="review-column" id="candidate-review-panel">
+              <div class="review-heading">
+                <div>
+                  <p class="section-kicker">Shared candidate inbox</p>
+                  <h3>Host 1 + Host 2 + Studio</h3>
+                </div>
+                <span id="candidate-summary" class="count-pill"></span>
+              </div>
+              <div id="candidate-list" class="candidate-list"></div>
+            </aside>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="studio-guide-dialog" class="studio-dialog guide-dialog">
+      <form method="dialog" class="dialog-card guide-dialog-card">
+        <button class="dialog-close" value="cancel" aria-label="Close" type="submit">×</button>
+        <p class="section-kicker">Operator guide</p>
+        <h2>One approved foundation, two production workflows</h2>
+        <p class="muted">Complete sources, sync, and transcript once. Then choose Full Episode or Social Clips. Each branch keeps its own approvals and outputs. Uploading and publishing happen outside Studio.</p>
+
+        <section class="guide-start-card">
+          <div>
+            <span class="guide-step-number">Before your first episode</span>
+            <strong>Set up this computer once</strong>
+            <p>Edit show.config.json for your show name, host names and links, then save and approve the reusable show opening, closing, and CTA defaults.</p>
+          </div>
+          <div class="guide-start-actions">
+            <button class="secondary-button" id="guide-show-button" type="button">Set show defaults</button>
+          </div>
+        </section>
+
+        <div class="guide-legend" aria-label="Workflow responsibility legend">
+          <span class="guide-badge local">Local processing</span>
+          <span class="guide-badge approval">Human approval</span>
+        </div>
+
+        <ol class="guide-workflow-list">
+          <li><span>01</span><div><strong>Add the actual recording files</strong><p>Choose Host 1 camera, Host 2 camera, and both isolated host tracks when available. Studio checks local bytes and transcribes locally.</p><small>Output: source intake receipt</small></div><em class="guide-badge local">Local</em></li>
+          <li><span>02</span><div><strong>Measure sync, then check playback</strong><p>Analyze waveform alignment, confirm or reject it, build the timeline, and verify the shared motion near both ends.</p><small>Output: approved sync and alignment receipts</small></div><em class="guide-badge approval">Approve</em></li>
+          <li><span>03</span><div><strong>Correct and confirm the transcript</strong><p>Use isolated tracks for speaker labels. Fix wording, swap roles only when needed, then confirm the transcript review.</p><small>Output: reviewed transcript context</small></div><em class="guide-badge approval">Approve</em></li>
+          <li><span>04A</span><div><strong>Full Episode: assemble and approve the show</strong><p>Apply the source-bound camera plan, inherit approved show defaults, watch the complete proxy, then render the full episode and its delivery files.</p><small>Output: approved episode recipe, render, and delivery receipts</small></div><em class="guide-badge approval">Approve</em></li>
+          <li><span>04B</span><div><strong>Social Clips: select and approve moments</strong><p>Choose <b>Start</b> and <b>End</b> on a complete thought. Review its title, hook, crop, and standalone value before approval.</p><small>Output: branch-specific candidate decisions</small></div><em class="guide-badge approval">Approve</em></li>
+          <li><span>05B</span><div><strong>Render and watch each approved vertical</strong><p>The current proven renderer creates local single-source 9:16 clips. Speaker-aware camera choices, batch variants, platform copy, and a versioned social package remain later work.</p><small>Output: local vertical media and render receipts</small></div><em class="guide-badge local">Local</em></li>
+          <li><span>06</span><div><strong>Prepare the release copy</strong><p>Draft titles, descriptions, show notes, and chapters from the configured show links. Uploading and publishing happen outside Studio.</p><small>Output: release brief</small></div><em class="guide-badge approval">Approve</em></li>
+        </ol>
+
+        <aside class="guide-safety-note">
+          <strong>What Studio never assumes</strong>
+          <span>No account connection, provider call, recording authorization, upload, publication, permission change, offline-state change, or verified cloud-sync claim happens automatically.</span>
+        </aside>
+
+        <div class="dialog-actions guide-dialog-actions">
+          <button class="secondary-button" id="guide-new-button" type="button">Start a new episode</button>
+          <button class="primary-button" value="cancel" type="submit">Done</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="episode-checklist-dialog" class="studio-dialog wide-dialog">
+      <form method="dialog" class="dialog-card checklist-dialog-card">
+        <button class="dialog-close" value="cancel" aria-label="Close" type="submit">×</button>
+        <p class="section-kicker">Repeatable episode operations</p>
+        <div class="checklist-dialog-heading">
+          <div>
+            <h2>Episode checklist</h2>
+            <p class="muted">Complete the human steps as the episode moves from planning through learning. Status and notes stay with this episode.</p>
+          </div>
+          <span id="episode-checklist-progress" class="status-badge pending">0 of 0</span>
+        </div>
+        <div class="checklist-progress-track" aria-hidden="true"><span id="episode-checklist-progress-bar"></span></div>
+        <div id="episode-checklist-list" class="episode-checklist-list"></div>
+        <details class="checklist-add-panel">
+          <summary>Add a lesson or episode-specific step</summary>
+          <div class="checklist-add-grid">
+            <label>Phase
+              <select id="checklist-new-phase">
+                <option value="planning">Planning</option><option value="recording">Recording</option><option value="transfer">Transfer</option>
+                <option value="production">Production</option><option value="delivery">Delivery</option><option value="learning">Learning</option>
+              </select>
+            </label>
+            <label>Owner <input id="checklist-new-owner" maxlength="100" placeholder="Host 1, Host 2, Both, or Studio" /></label>
+            <label class="full-span">Step <input id="checklist-new-title" maxlength="240" placeholder="What should happen every episode?" /></label>
+            <label class="full-span">Why or how <textarea id="checklist-new-description" rows="2" maxlength="2000"></textarea></label>
+          </div>
+          <div class="dialog-actions"><button class="primary-button" id="add-checklist-item-button" type="button">Add to this episode</button></div>
+        </details>
+        <div class="dialog-actions"><button class="primary-button" value="cancel" type="submit">Done</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="checklist-item-dialog" class="studio-dialog">
+      <form method="dialog" class="dialog-card">
+        <button class="dialog-close" value="cancel" aria-label="Close" type="submit">×</button>
+        <p class="section-kicker" id="checklist-item-phase">Checklist item</p>
+        <h2 id="checklist-item-title">Update step</h2>
+        <p id="checklist-item-description" class="muted"></p>
+        <label>Status
+          <select id="checklist-item-status">
+            <option value="todo">To do</option><option value="complete">Complete</option>
+            <option value="blocked">Blocked</option><option value="not_applicable">Not applicable</option>
+          </select>
+        </label>
+        <label>Owner <input id="checklist-item-owner" maxlength="100" /></label>
+        <label>Notes <textarea id="checklist-item-notes" rows="4" maxlength="4000" placeholder="Receipt, blocker, or lesson"></textarea></label>
+        <label id="checklist-item-archive-row" class="cta-closing-option hidden"><input id="checklist-item-archived" type="checkbox" /> Archive this custom step</label>
+        <div class="dialog-actions">
+          <button class="secondary-button" value="cancel" type="submit">Cancel</button>
+          <button class="primary-button" id="save-checklist-item-button" type="button">Save checklist item</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="new-episode-dialog" class="studio-dialog wide-dialog">
+      <form method="dialog" class="dialog-card" id="new-episode-form">
+        <button class="dialog-close" value="cancel" aria-label="Close" type="submit">×</button>
+        <p class="section-kicker">New episode</p>
+        <h2>Build the local source set</h2>
+        <p class="muted">Add what was actually recorded. Studio checks each source, then transcribes the Host 1 camera locally. Nothing is uploaded or called synchronized yet.</p>
+        <div class="source-guidance">
+          <strong>Best review path</strong>
+          <span>Add all four files when available. One camera still works, but isolated audio is what makes Host 1/Host 2 transcript review possible.</span>
+        </div>
+        <div class="source-form-grid">
+          <label for="primary-camera-path">Host 1 camera <span>Required · transcribed</span></label>
+          <div class="path-picker">
+            <input id="primary-camera-path" placeholder="Full path to the Host 1 camera file" autocomplete="off" />
+            <button class="secondary-button source-browse" data-target="primary-camera-path" data-kind="video" type="button">Browse</button>
+          </div>
+          <label for="secondary-camera-path">Host 2 camera <span>Optional</span></label>
+          <div class="path-picker">
+            <input id="secondary-camera-path" placeholder="Full path to the Host 2 camera file" autocomplete="off" />
+            <button class="secondary-button source-browse" data-target="secondary-camera-path" data-kind="video" type="button">Browse</button>
+          </div>
+          <div class="audio-parts-label">
+            <strong>Host 1 isolated audio</strong><span>Optional · add every transmitter WAV in recorded order</span>
+          </div>
+          <div class="audio-parts-editor" data-audio-role="host_1_audio">
+            <div id="host-1-audio-parts" class="audio-part-rows"></div>
+            <button class="ghost-button add-audio-part" data-audio-role="host_1_audio" type="button">+ Add Host 1 part</button>
+            <label class="part-order-confirm"><input id="host-1-order-confirmed" type="checkbox" /> I checked this order against the recorder sequence</label>
+          </div>
+          <div class="audio-parts-label">
+            <strong>Host 2 isolated audio</strong><span>Optional · split points may differ from Host 1</span>
+          </div>
+          <div class="audio-parts-editor" data-audio-role="host_2_audio">
+            <div id="host-2-audio-parts" class="audio-part-rows"></div>
+            <button class="ghost-button add-audio-part" data-audio-role="host_2_audio" type="button">+ Add Host 2 part</button>
+            <label class="part-order-confirm"><input id="host-2-order-confirmed" type="checkbox" /> I checked this order against the recorder sequence</label>
+          </div>
+        </div>
+        <p class="field-help">Use Add, Remove, ↑, and ↓ to match the actual recording sequence; filenames are never trusted for order. Raw files remain unchanged. Studio creates only local lossless derivatives after every seam is reviewed.</p>
+        <div class="dialog-actions">
+          <button class="secondary-button" value="cancel" type="submit">Cancel</button>
+          <button class="primary-button" id="ingest-button" type="button" disabled>Analyze &amp; transcribe</button>
+        </div>
+      </form>
+    </dialog>
+
+
+
+    <dialog id="show-package-dialog" class="studio-dialog wide-dialog">
+      <form method="dialog" class="dialog-card" id="show-package-form">
+        <button class="dialog-close" value="cancel" aria-label="Close" type="submit">×</button>
+        <p class="section-kicker">Reusable production package</p>
+        <div class="show-package-heading">
+          <div>
+            <h2>Show package defaults</h2>
+            <p class="muted">Configure once, approve separately, then inherit the opening, closing, and CTA into each episode. Saving a new master never rewrites an approved episode.</p>
+          </div>
+          <span id="show-package-status" class="status-badge pending">Not configured</span>
+        </div>
+        <label>Package name <input id="show-package-name" maxlength="120" value="" /></label>
+        <div class="show-package-grid">
+          <section class="assembly-asset-card">
+            <strong>Reusable opening</strong>
+            <label>Narration
+              <select id="show-opening-narration-mode">
+                <option value="episode_specific">Different narration each episode</option>
+                <option value="evergreen">Same narration every episode</option>
+              </select>
+            </label>
+            <label>Visual <div class="path-picker"><input id="show-opening-visual" placeholder="MP4, MOV, or image" /><button class="secondary-button source-browse" data-target="show-opening-visual" data-kind="visual" type="button">Browse</button></div></label>
+            <label id="show-opening-voiceover-row">Evergreen narration <div class="path-picker"><input id="show-opening-voiceover" placeholder="WAV, M4A, MP3, FLAC, or AAC" /><button class="secondary-button source-browse" data-target="show-opening-voiceover" data-kind="audio" type="button">Browse</button></div></label>
+            <label>Background music <div class="path-picker"><input id="show-opening-music" placeholder="Optional audio file" /><button class="secondary-button source-browse" data-target="show-opening-music" data-kind="audio" type="button">Browse</button></div></label>
+            <button class="secondary-button" id="preview-show-opening-button" type="button">Render opening preview</button>
+          </section>
+          <section class="assembly-asset-card">
+            <strong>Reusable closing</strong>
+            <label>Narration
+              <select id="show-closing-narration-mode">
+                <option value="episode_specific">Different narration each episode</option>
+                <option value="evergreen">Same narration every episode</option>
+              </select>
+            </label>
+            <label>Visual <div class="path-picker"><input id="show-closing-visual" placeholder="MP4, MOV, or image" /><button class="secondary-button source-browse" data-target="show-closing-visual" data-kind="visual" type="button">Browse</button></div></label>
+            <label id="show-closing-voiceover-row">Evergreen narration <div class="path-picker"><input id="show-closing-voiceover" placeholder="WAV, M4A, MP3, FLAC, or AAC" /><button class="secondary-button source-browse" data-target="show-closing-voiceover" data-kind="audio" type="button">Browse</button></div></label>
+            <label>Background music <div class="path-picker"><input id="show-closing-music" placeholder="Optional audio file" /><button class="secondary-button source-browse" data-target="show-closing-music" data-kind="audio" type="button">Browse</button></div></label>
+            <button class="secondary-button" id="preview-show-closing-button" type="button">Render closing preview</button>
+          </section>
+          <section class="assembly-asset-card">
+            <strong>Default podcast CTA</strong>
+            <label>Visible show label <input id="show-cta-label" maxlength="80" value="" /></label>
+            <label>Podcast-page link <input id="show-cta-url" maxlength="500" value="" placeholder="https://example.com/podcast" /></label>
+            <div class="cta-action-options">
+              <label><input id="show-cta-like" type="checkbox" checked /> Like</label>
+              <label><input id="show-cta-comment" type="checkbox" checked /> Comment</label>
+              <label><input id="show-cta-subscribe" type="checkbox" checked /> Subscribe</label>
+            </div>
+            <label>Custom pop-in <div class="path-picker"><input id="show-cta-asset" placeholder="Optional animation or image" /><button class="secondary-button source-browse" data-target="show-cta-asset" data-kind="visual" type="button">Browse</button></div></label>
+            <label class="cta-closing-option"><input id="show-cta-closing" type="checkbox" checked /> Show CTA over closing</label>
+          </section>
+          <section class="assembly-asset-card">
+            <strong>Default newsletter CTA</strong>
+            <label>Visible label <input id="show-newsletter-label" maxlength="80" value="" /></label>
+            <label>Approved short URL <input id="show-newsletter-url" maxlength="500" placeholder="Optional until approved" /></label>
+            <label>Custom graphic <div class="path-picker"><input id="show-newsletter-asset" placeholder="Optional animation or image" /><button class="secondary-button source-browse" data-target="show-newsletter-asset" data-kind="visual" type="button">Browse</button></div></label>
+          </section>
+        </div>
+        <div id="show-package-findings" class="assembly-receipt"></div>
+        <div id="show-package-preview" class="show-package-preview-grid"></div>
+        <label>Review notes <textarea id="show-package-review-notes" rows="2" maxlength="2000" placeholder="Optional"></textarea></label>
+        <p class="field-help">Configuration and previews stay in local ignored work files.</p>
+        <div class="dialog-actions">
+          <button class="ghost-button" id="reject-show-package-button" type="button">Reject defaults</button>
+          <button class="secondary-button" id="save-show-package-button" type="button">Save defaults</button>
+          <button class="primary-button" id="approve-show-package-button" type="button">Approve defaults</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="candidate-dialog" class="studio-dialog wide-dialog">
+      <form method="dialog" class="dialog-card" id="candidate-form">
+        <button class="dialog-close" value="cancel" aria-label="Close" type="submit">×</button>
+        <p class="section-kicker">Candidate editor</p>
+        <h2 id="candidate-dialog-title">Add a candidate</h2>
+        <input type="hidden" id="candidate-id" />
+        <div class="candidate-editor-layout">
+          <div class="candidate-fields">
+            <div class="form-grid two-column">
+              <label>Start <input id="candidate-start" required placeholder="00:01:23.456" /></label>
+              <label>End <input id="candidate-end" required placeholder="00:01:53.456" /></label>
+            </div>
+            <label>Working title <input id="candidate-title" required maxlength="120" /></label>
+            <label>Opening words from the transcript <textarea id="candidate-hook" required maxlength="500" rows="2"></textarea></label>
+            <label>Why it stands alone <textarea id="candidate-rationale" required maxlength="1000" rows="2"></textarea></label>
+            <label>Clip category
+              <select id="candidate-category">
+                <option value="thesis">Thesis</option><option value="takeaway">Takeaway</option><option value="story">Story</option>
+                <option value="disagreement">Disagreement</option><option value="surprising_fact">Surprising fact</option>
+                <option value="myth_correction">Myth correction</option><option value="explainer" selected>Explainer</option>
+                <option value="question">Question</option><option value="evergreen">Evergreen</option><option value="timely">Timely</option><option value="teaser">Teaser</option>
+              </select>
+            </label>
+            <label>On-screen hook <input id="candidate-overlay" maxlength="80" placeholder="Optional 5–8 word promise" /></label>
+            <label>Horizontal crop adjustment <input id="candidate-crop" type="number" step="1" value="0" /></label>
+            <p class="field-help">Candidates must run 15–90 seconds. Studio checks timestamps and framing before saving.</p>
+          </div>
+          <section class="candidate-vertical-preview" aria-label="9 by 16 pre-render clip preview">
+            <div class="candidate-preview-heading"><div><strong>9:16 pre-render preview</strong><span>Crop and text guides only</span></div><button class="ghost-button" id="candidate-preview-play-button" type="button">Preview at start</button></div>
+            <div class="candidate-preview-frame" id="candidate-preview-frame">
+              <video id="candidate-preview-video" muted playsinline preload="metadata"></video>
+              <div class="candidate-preview-side-safe" aria-hidden="true"></div>
+              <div class="candidate-preview-top-risk" aria-hidden="true">Platform controls vary</div>
+              <div class="candidate-preview-hook" id="candidate-preview-hook">Optional hook</div>
+              <div class="candidate-preview-caption" id="candidate-preview-caption">Opening transcript words</div>
+              <div class="candidate-preview-bottom-risk" aria-hidden="true">Keep text above this line</div>
+            </div>
+            <p id="candidate-preview-note">This browser mask matches Studio's center crop and current text positions. It is not a rendered output or platform-device receipt.</p>
+          </section>
+        </div>
+        <div class="dialog-actions">
+          <button class="secondary-button" value="cancel" type="submit">Cancel</button>
+          <button class="primary-button" id="save-candidate-button" type="button">Save candidate</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="candidate-review-dialog" class="studio-dialog">
+      <form method="dialog" class="dialog-card" id="candidate-review-form">
+        <button class="dialog-close" value="cancel" aria-label="Close" type="submit">×</button>
+        <p class="section-kicker">Candidate decision</p>
+        <h2 id="candidate-review-title">Review candidate</h2>
+        <p id="candidate-review-context" class="muted"></p>
+        <video id="candidate-review-video" class="social-review-video" controls playsinline preload="metadata"></video>
+        <div id="candidate-review-evidence" class="candidate-review-evidence"></div>
+        <label>Decision
+          <select id="candidate-review-status">
+            <option value="approved">Approve for local rendering</option>
+            <option value="needs_discussion">Needs discussion</option>
+            <option value="rejected">Reject and preserve</option>
+            <option value="proposed">Return to proposed</option>
+          </select>
+        </label>
+        <label>Note <textarea id="candidate-review-notes" maxlength="2000" rows="4" placeholder="Why this works, what needs discussion, or why it was rejected"></textarea></label>
+        <p class="field-help">Approval authorizes only Studio's local render step. It does not authorize upload, packaging, or publication.</p>
+        <div class="dialog-actions">
+          <button class="secondary-button" value="cancel" type="submit">Cancel</button>
+          <button class="primary-button" id="save-candidate-review-button" type="button">Save decision</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="social-render-review-dialog" class="studio-dialog wide-dialog">
+      <form method="dialog" class="dialog-card">
+        <button class="dialog-close" value="cancel" aria-label="Close" type="submit">×</button>
+        <p class="section-kicker">Exact rendered master</p>
+        <h2 id="social-render-review-title">Watch the complete clip</h2>
+        <p class="muted">Approval unlocks packaging only after this exact file plays through its end.</p>
+        <video id="social-render-review-video" class="social-review-video" controls playsinline preload="metadata"></video>
+        <p id="social-render-review-warnings" class="candidate-warning"></p>
+        <div id="social-render-review-progress" class="assembly-receipt">Complete watch not yet observed in this review.</div>
+        <div class="proxy-review-checks">
+          <label><input data-social-render-check="opening" type="checkbox" /> Opens immediately on a complete, accurate thought</label>
+          <label><input data-social-render-check="captions" type="checkbox" /> Captions are correct, synced, and unobstructed</label>
+          <label><input data-social-render-check="crop" type="checkbox" /> Speaker cuts and 9:16 framing feel natural</label>
+          <label><input data-social-render-check="audio" type="checkbox" /> Isolated audio is clear and synchronized</label>
+          <label><input data-social-render-check="ending" type="checkbox" /> Ends on the payoff without trailing conversation</label>
+        </div>
+        <label>Notes <textarea id="social-render-review-notes" rows="2" maxlength="2000"></textarea></label>
+        <div class="dialog-actions">
+          <button class="ghost-button" id="reject-social-render-button" type="button">Reject render</button>
+          <button class="primary-button" id="approve-social-render-button" type="button" disabled>Approve watched master</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="social-package-dialog" class="studio-dialog wide-dialog">
+      <form method="dialog" class="dialog-card">
+        <button class="dialog-close" value="cancel" aria-label="Close" type="submit">×</button>
+        <p class="section-kicker">One master · three platform cards</p>
+        <h2 id="social-package-title">Prepare social package</h2>
+        <label>Specific YouTube episode URL <input id="social-package-url" type="url" maxlength="2000" placeholder="https://www.youtube.com/watch?v=..." /></label>
+        <label>Core caption <textarea id="social-package-caption" rows="3" maxlength="2200"></textarea></label>
+        <label>Exactly three hashtags, show hashtag first <input id="social-package-hashtags" maxlength="300" value="" /></label>
+        <label>Cover headline <input id="social-package-cover" maxlength="120" /></label>
+        <label>Release slot
+          <select id="social-package-release-slot"><option value="day_0">Episode day</option><option value="day_5">Five days later</option><option value="day_10">Ten days later</option></select>
+        </label>
+        <label class="cta-closing-option"><input id="social-package-tiktok-link" type="checkbox" /> TikTok currently has a working bio link</label>
+        <div id="social-package-preview" class="social-package-preview"></div>
+        <div class="dialog-actions">
+          <button class="secondary-button" value="cancel" type="submit">Cancel</button>
+          <button class="secondary-button" id="save-social-package-button" type="button">Save three-platform package</button>
+          <button class="primary-button" id="approve-social-package-button" type="button">Approve current package once</button>
+        </div>
+        <p class="field-help">The core caption and hashtags stay the same. YouTube gets a Related Video link; Instagram gets link-in-bio wording; TikTok shows the episode URL when no working bio link exists.</p>
+      </form>
+    </dialog>
+
+    <dialog id="transcript-edit-dialog" class="studio-dialog">
+      <form method="dialog" class="dialog-card" id="transcript-edit-form">
+        <button class="dialog-close" value="cancel" aria-label="Close" type="submit">×</button>
+        <p class="section-kicker">Transcript correction</p>
+        <h2>Fix this line</h2>
+        <p id="transcript-edit-context" class="muted"></p>
+        <label>Speaker
+          <select id="transcript-edit-speaker">
+            <option value="host_1">Host 1</option>
+            <option value="host_2">Host 2</option>
+          </select>
+        </label>
+        <label>What was actually said <textarea id="transcript-edit-text" required maxlength="2000" rows="5"></textarea></label>
+        <label class="cta-closing-option"><input id="transcript-edit-dismiss-bleed" type="checkbox" /> Dismiss this line as microphone bleed</label>
+        <p class="field-help">Timing and source evidence stay unchanged. Dismissed bleed remains preserved in the review receipt and is excluded from the approved transcript. Any change returns candidate approvals to pending.</p>
+        <div class="dialog-actions">
+          <button class="secondary-button" value="cancel" type="submit">Cancel</button>
+          <button class="primary-button" id="save-transcript-edit-button" type="button">Save line review</button>
+        </div>
+      </form>
+    </dialog>
+
+    <aside id="job-drawer" class="job-drawer hidden" aria-live="polite">
+      <div class="job-heading">
+        <div><span class="working-dot"></span><strong id="job-title">Working locally</strong></div>
+        <div class="job-heading-actions">
+          <span id="job-status">Running</span>
+          <button id="job-close-button" class="job-close hidden" type="button" aria-label="Hide job details">Hide</button>
+        </div>
+      </div>
+      <pre id="job-logs"></pre>
+    </aside>
+
+    <dialog id="recovery-import-dialog">
+      <form id="recovery-import-form" class="recovery-import-form">
+        <h2>Resume a reviewed recovery</h2>
+        <p>Bring an existing multipart recovery into Studio with its original sources, camera map and exact review evidence. File verification runs locally and may take a few minutes.</p>
+        <label>Recovery package path<input id="recovery-package-path" required placeholder="…/work/your-recovery/recovery-package.json" /></label>
+        <p>This imports scoped decisions. Final visual treatment and final master still need review.</p>
+        <button class="primary-button" type="submit">Verify and import</button>
+        <button class="secondary-button" id="recovery-import-cancel" type="button">Cancel</button>
+      </form>
+    </dialog>
+    <div id="toast" class="toast hidden" role="status"></div>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "eaol-studio",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Explore AI Out Loud Studio: a local-first production studio for two-host video podcasts.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "setup:check": "node scripts/check-setup.mjs",
+    "demo:episode": "node scripts/make-synthetic-episode.mjs",
+    "studio": "node studio/server.mjs",
+    "test": "node --test --test-concurrency=1 *_test.mjs studio/*_test.mjs",
+    "transcript:prepare": "node studio/transcript_prepare.mjs",
+    "transcript:audit": "node studio/transcript_final_audit.mjs",
+    "social:finish": "node studio/social_finishing.mjs"
+  },
+  "dependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "satori": "^0.29.0"
+  }
+}

@@ -1,0 +1,12 @@
+# Generated media, models and working files never commit.
+work/
+models/
+tmp/
+output/
+node_modules/
+.env*
+*.mp4
+*.mov
+*.wav
+*.bin
+.DS_Store

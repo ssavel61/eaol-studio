@@ -1,0 +1,26 @@
+{
+  "schema": "eaol-clips-v2",
+  "source_slug": "fixture",
+  "selected_by": "Host 1 via Studio",
+  "clips": [
+    {
+      "id": "clip_001",
+      "start": "00:00:00.000",
+      "end": "00:00:20.000",
+      "segment_ids": ["seg_0001", "seg_0002"],
+      "title": "A complete thought",
+      "hook": "This is the opening line.",
+      "rationale": "It makes sense without episode context.",
+      "crop_offset_px": 0,
+      "hook_overlay": "A clear promise",
+      "proposed_by": "host_1",
+      "proposed_at": "2026-08-30T20:00:00.000Z",
+      "origin": "human",
+      "category": "explainer",
+      "cluster_id": "cluster_001",
+      "signals": [],
+      "flags": [],
+      "boundary_notes": []
+    }
+  ]
+}

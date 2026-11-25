@@ -1,0 +1,42 @@
+{
+  "show_name": "Example Podcast",
+  "hosts": {
+    "host_1": "Host 1",
+    "host_2": "Host 2"
+  },
+  "links": {
+    "website": "https://example.com/podcast",
+    "apple_podcasts": "https://example.com/listen/apple",
+    "spotify": "https://example.com/listen/spotify",
+    "newsletter_name": "Example Newsletter",
+    "newsletter": "https://example.com/newsletter"
+  },
+  "release": {
+    "cadence_line": "New episodes every other week.",
+    "utm_medium": "podcast",
+    "chapters": {
+      "enforce_from_episode": null,
+      "min_count": 3,
+      "min_duration_seconds": 120,
+      "required_segment_prefixes": []
+    }
+  },
+  "audio": {
+    "channel_mapping": {
+      "left": "host_1",
+      "right": "host_2"
+    }
+  },
+  "social": {
+    "show_hashtag": "#ExamplePodcast",
+    "cover_tagline": "An example tagline.",
+    "topic_keywords": [
+      "workflow",
+      "automation",
+      "tools"
+    ]
+  },
+  "tiles": {
+    "presented_by": "presented by example.com"
+  }
+}

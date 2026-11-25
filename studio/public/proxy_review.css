@@ -1,0 +1,152 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #091011;
+  color: #f6f4ed;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(95, 169, 176, 0.12), transparent 34rem),
+    #091011;
+}
+
+.review-shell {
+  width: min(1440px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 28px 0 48px;
+}
+
+.review-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 22px;
+}
+
+h1, h2, p { margin-top: 0; }
+h1 { margin-bottom: 8px; font-size: clamp(1.8rem, 4vw, 3.25rem); line-height: 1.04; }
+h2 { margin-bottom: 14px; font-size: 1.2rem; }
+
+.eyebrow {
+  margin-bottom: 8px;
+  color: #8ec8cf;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.lede, .status, .acceptance p {
+  max-width: 780px;
+  margin-bottom: 0;
+  color: #aebfbd;
+  line-height: 1.55;
+}
+
+.studio-link {
+  flex: 0 0 auto;
+  border: 1px solid #496268;
+  border-radius: 10px;
+  padding: 11px 15px;
+  color: #e8f2f1;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.studio-link:hover, .studio-link:focus-visible { border-color: #8ec8cf; outline: none; }
+
+.video-panel {
+  overflow: hidden;
+  border: 1px solid #26383c;
+  border-radius: 18px;
+  background: #030506;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.34);
+}
+
+video {
+  display: block;
+  width: 100%;
+  max-height: calc(100vh - 180px);
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+
+.status { padding: 11px 16px 13px; }
+.status.ready { color: #a9dcd5; }
+.status.error { color: #ffb4ab; }
+
+.review-guide {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.review-guide > div {
+  border: 1px solid #26383c;
+  border-radius: 14px;
+  padding: 20px;
+  background: #0e1719;
+}
+
+.timeline, .acceptance ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: #c7d1cf;
+}
+
+.timeline li, .acceptance li { margin: 9px 0; line-height: 1.45; }
+.timeline li { display: grid; grid-template-columns: 10.6rem minmax(0, 1fr) auto; align-items: center; gap: 12px; }
+.timeline strong { display: inline-block; min-width: 8.6rem; color: #f1dfa8; }
+.timeline span { color: #c7d1cf; }
+.timeline .cta-moment {
+  margin-left: -8px;
+  border: 1px solid #496268;
+  border-radius: 10px;
+  padding: 9px 10px;
+  background: #142326;
+}
+.seek-button {
+  border: 1px solid #8ec8cf;
+  border-radius: 8px;
+  padding: 7px 10px;
+  background: transparent;
+  color: #d9efec;
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+}
+.seek-button:hover, .seek-button:focus-visible { background: #21383c; outline: none; }
+.acceptance p:last-child { margin-top: 16px; color: #f1dfa8; font-weight: 700; }
+
+.full-review .review-shell { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 20px; }
+.full-review .review-header { grid-column: 1 / -1; margin-bottom: 0; }
+.full-review h1 { font-size: clamp(1.7rem, 3vw, 2.4rem); }
+.full-review .video-panel { align-self: start; position: sticky; top: 16px; }
+.full-review .review-guide { display: block; margin-top: 0; }
+.full-review .acceptance { margin-top: 16px; }
+.full-review .timeline { padding: 0; }
+.full-review .timeline li { grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; padding-bottom: 8px; }
+.full-review .timeline strong { min-width: 0; font-size: 0.85rem; }
+.full-review .timeline span { grid-row: 2; }
+.full-review .seek-button { grid-column: 2; grid-row: 1 / 3; }
+
+@media (max-width: 760px) {
+  .full-review .review-shell { display: block; }
+  .full-review .review-header { margin-bottom: 16px; }
+  .full-review .video-panel { position: static; }
+  .full-review .review-guide { margin-top: 16px; }
+  .review-shell { width: min(100% - 24px, 1440px); padding-top: 18px; }
+  .review-header { align-items: stretch; flex-direction: column; }
+  .studio-link { text-align: center; }
+  .review-guide { grid-template-columns: 1fr; }
+  .timeline strong { display: block; min-width: 0; }
+  .timeline li { grid-template-columns: 1fr; gap: 3px; }
+  .seek-button { justify-self: start; margin-top: 4px; }
+}
